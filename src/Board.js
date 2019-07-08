@@ -40,6 +40,8 @@ class Board extends Component {
       board: this.createBoard(),
       hasWon: false,
     };
+
+    this.flipCellsAround = this.flipCellsAround.bind(this);
   }
 
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
@@ -54,6 +56,7 @@ class Board extends Component {
         board[i].push(randomBool);
       }
     }
+
     return board;
   }
 
@@ -73,11 +76,26 @@ class Board extends Component {
     }
 
     // TODO: flip this cell and the cells around it
+    flipCell(y, x);
+    flipCell(`${y - 1}`, x);
+    flipCell(`${y + 1}`, x);
+    flipCell(y, `${x - 1}`);
+    flipCell(y, `${x + 1}`);
 
     // win when every cell is turned off
     // TODO: determine is the game has been won
+    const noneLit = this.state.board.every(row => {
+      return row.every(cell => {
+        return cell === false;
+      });
+    });
 
-    // this.setState({ board, hasWon });
+    console.log(noneLit);
+
+    this.setState({
+      board,
+      hasWon: noneLit,
+    });
   }
 
   /** Render game board or winning message. */
@@ -88,13 +106,21 @@ class Board extends Component {
     return (
       <table className="Board">
         <tbody>
-          {this.state.board.map(rows => {
+          {this.state.board.map((rows, i) => {
+            let parentKey = i;
             return (
-              <trow className={rows}>
-                {rows.map(cell => {
-                  return <Cell isLit={cell} />;
+              <tr className="Board-row" key={i}>
+                {rows.map((isLit, i) => {
+                  return (
+                    <Cell
+                      id={`${parentKey}-${i}`}
+                      key={`${parentKey}-${i}`}
+                      isLit={isLit}
+                      flipCellsAroundMe={this.flipCellsAround}
+                    />
+                  );
                 })}
-              </trow>
+              </tr>
             );
           })}
         </tbody>
