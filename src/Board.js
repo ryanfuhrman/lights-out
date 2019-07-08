@@ -32,6 +32,7 @@ class Board extends Component {
   static defaultProps = {
     nrows: 5,
     ncols: 5,
+    chanceLightStartsOn: 0.5,
   };
 
   constructor(props) {
@@ -45,6 +46,7 @@ class Board extends Component {
   }
 
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
+  // DONE
 
   createBoard() {
     let board = [];
@@ -52,7 +54,7 @@ class Board extends Component {
     for (let i = 0; i < this.props.ncols; i++) {
       board.push([]);
       for (let j = 0; j < this.props.nrows; j++) {
-        let randomBool = Math.random() <= 0.4;
+        let randomBool = Math.random() <= this.props.chanceLightStartsOn;
         board[i].push(randomBool);
       }
     }
@@ -61,7 +63,7 @@ class Board extends Component {
   }
 
   /** handle changing a cell: update board & determine if winner */
-
+  // DONE
   flipCellsAround(coord) {
     let { ncols, nrows } = this.props;
     let board = this.state.board;
@@ -76,6 +78,7 @@ class Board extends Component {
     }
 
     // TODO: flip this cell and the cells around it
+    // DONE
     flipCell(y, x);
     flipCell(`${y - 1}`, x);
     flipCell(`${y + 1}`, x);
@@ -84,13 +87,12 @@ class Board extends Component {
 
     // win when every cell is turned off
     // TODO: determine is the game has been won
+    // DONE
     const noneLit = this.state.board.every(row => {
       return row.every(cell => {
         return cell === false;
       });
     });
-
-    console.log(noneLit);
 
     this.setState({
       board,
@@ -99,33 +101,38 @@ class Board extends Component {
   }
 
   /** Render game board or winning message. */
+  // DONE
 
   render() {
     // if the game is won, just show a winning msg & render nothing else
-    // TODO // make table board // TODO
-    return (
-      <table className="Board">
-        <tbody>
-          {this.state.board.map((rows, i) => {
-            let parentKey = i;
-            return (
-              <tr className="Board-row" key={i}>
-                {rows.map((isLit, i) => {
-                  return (
-                    <Cell
-                      id={`${parentKey}-${i}`}
-                      key={`${parentKey}-${i}`}
-                      isLit={isLit}
-                      flipCellsAroundMe={this.flipCellsAround}
-                    />
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    );
+    if (this.state.hasWon) {
+      return <h2>Winner!</h2>;
+    } else {
+      // TODO // make table board // TODO
+      return (
+        <table className="Board">
+          <tbody>
+            {this.state.board.map((rows, i) => {
+              let parentKey = i;
+              return (
+                <tr className="Board-row" key={i}>
+                  {rows.map((isLit, i) => {
+                    return (
+                      <Cell
+                        id={`${parentKey}-${i}`}
+                        key={`${parentKey}-${i}`}
+                        isLit={isLit}
+                        flipCellsAroundMe={this.flipCellsAround}
+                      />
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      );
+    }
   }
 }
 
