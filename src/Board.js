@@ -32,7 +32,7 @@ class Board extends Component {
   static defaultProps = {
     nrows: 5,
     ncols: 5,
-    chanceLightStartsOn: 0.5,
+    chanceLightStartsOn: 0.25,
   };
 
   constructor(props) {
@@ -80,15 +80,15 @@ class Board extends Component {
     // TODO: flip this cell and the cells around it
     // DONE
     flipCell(y, x);
-    flipCell(`${y - 1}`, x);
-    flipCell(`${y + 1}`, x);
-    flipCell(y, `${x - 1}`);
-    flipCell(y, `${x + 1}`);
+    flipCell(y - 1, x);
+    flipCell(y + 1, x);
+    flipCell(y, x - 1);
+    flipCell(y, x + 1);
 
     // win when every cell is turned off
     // TODO: determine is the game has been won
     // DONE
-    const noneLit = this.state.board.every(row => {
+    const hasWon = this.state.board.every(row => {
       return row.every(cell => {
         return cell === false;
       });
@@ -96,7 +96,7 @@ class Board extends Component {
 
     this.setState({
       board,
-      hasWon: noneLit,
+      hasWon,
     });
   }
 
@@ -113,14 +113,14 @@ class Board extends Component {
         <table className="Board">
           <tbody>
             {this.state.board.map((rows, i) => {
-              let parentKey = i;
+              let y = i;
               return (
                 <tr className="Board-row" key={i}>
-                  {rows.map((isLit, i) => {
+                  {rows.map((isLit, x) => {
                     return (
                       <Cell
-                        id={`${parentKey}-${i}`}
-                        key={`${parentKey}-${i}`}
+                        id={`${y}-${x}`}
+                        key={`${y}-${x}`}
                         isLit={isLit}
                         flipCellsAroundMe={this.flipCellsAround}
                       />
